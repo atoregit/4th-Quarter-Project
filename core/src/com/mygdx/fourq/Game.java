@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +33,7 @@ public class Game extends ApplicationAdapter {
 	private Array<Rectangle> fruits;
 	private long lastDropTime;
 	private BitmapFont font;
+	private Texture texture;
 
 	private int playerSpeed = PLAYER_SPEED_DEFAULT;
 	private int points;
@@ -44,8 +46,12 @@ public class Game extends ApplicationAdapter {
 		playerImage = new Texture(Gdx.files.internal("cheebi.png"));
 
 		// load the drop sound effect and the rain background "music"
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("nom.mp3"));
+		dropSound = Gdx.audio.newSound(Gdx.files.internal("hit.wav"));
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("music.wav"));
+
+		// set up the screen (kind of self-explanatory rite)
+		setupScreen();
+		texture = new Texture(Gdx.files.internal("bg.png"));
 
 		// start the playback of the background music immediately
 		rainMusic.setLooping(true);
@@ -62,7 +68,7 @@ public class Game extends ApplicationAdapter {
 
 		// create a Rectangle to logically represent the player
 		player = new Rectangle();
-		player.x = 480 / 2 - PLAYER_SIZE / 2; // center the player horizontally
+		player.x = 480 / 2f - PLAYER_SIZE / 2f; // center the player horizontally
 		player.y = 20; // bottom left corner of the player is 20 pixels above the bottom screen edge
 		player.width = PLAYER_SIZE;
 		player.height = PLAYER_SIZE;
@@ -89,7 +95,7 @@ public class Game extends ApplicationAdapter {
 		// arguments to clear are the red, green
 		// blue and alpha component in the range [0,1]
 		// of the color to be used to clear the screen.
-		ScreenUtils.clear(0, 0, 0, 1);
+		ScreenUtils.clear(1, 1, 1, 1);
 
 		// tell the camera to update its matrices.
 		camera.update();
@@ -98,9 +104,11 @@ public class Game extends ApplicationAdapter {
 		// coordinate system specified by the camera.
 		batch.setProjectionMatrix(camera.combined);
 
+
 		// begin a new batch and draw the player and
 		// all drops
 		batch.begin();
+		batch.draw(texture, 0, margin, GAME_SCREEN_X, GAME_SCREEN_Y);
 		batch.draw(playerImage, player.x, player.y);
 		for(Rectangle raindrop: fruits) {
 			batch.draw(dropImage, raindrop.x, raindrop.y);
@@ -162,15 +170,30 @@ public class Game extends ApplicationAdapter {
 		font.dispose();
 	}
 
+	public void setupScreen() {
+//		float totalHeight = Gdx.graphics.getHeight();
+//		margin = totalHeight * MARGIN_RATIO;
+//		playingAreaHeight = totalHeight * PLAYING_AREA_RATIO - 2 * margin;
+//		whiteAreaHeight = totalHeight * WHITE_AREA_RATIO - 2 * margin;
+	}
+
 
 	private static final int PLAYER_SIZE = 64;
 	private static final int FRUIT_SIZE = 64;
 	private static final int PLAYER_SPEED_DEFAULT = 200;
 	private static final int PLAYER_SPEED_FAST = 500;
 	private static final int FRUIT_SPEED = 500;
-	private final int GAME_SCREEN_X = 360;
+	private final int GAME_SCREEN_X = 480;
 	private final int GAME_SCREEN_Y = 640;
-	private static final float SPAWN_FRUIT_INTERVAL = 1000000000f;
+	private static final float SPAWN_FRUIT_INTERVAL = 1000000000/3f;
+
+	private static final float PLAYING_AREA_RATIO = 2f / 3f;
+	private static final float WHITE_AREA_RATIO = 1f / 3f;
+	private static final float MARGIN_RATIO = 0.05f;
+	private float playingAreaHeight;
+	private float whiteAreaHeight;
+	private float margin = 0;
+
 
 
 

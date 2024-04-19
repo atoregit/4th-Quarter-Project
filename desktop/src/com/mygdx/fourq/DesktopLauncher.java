@@ -10,7 +10,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.useVsync(true);
-		config.setWindowedMode(360, 640);
+		config.setWindowedMode(480, 640);
+		config.setResizable(false);
 		config.setTitle("Fourth Quarter Game");
 		new Lwjgl3Application(new Game(), config);
 	}
