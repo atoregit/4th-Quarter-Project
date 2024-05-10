@@ -21,12 +21,7 @@ public class Player {
     }
 
     public void render() {
-        if(Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.camera.unproject(touchPos);
-            game.player.x = touchPos.x - PLAYER_SIZE / 2f;
-        }
+
     }
 
     public void move() {
@@ -44,16 +39,23 @@ public class Player {
 
 
     public void processSpeed() {
-        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !game.stunned) {
             speed = PLAYER_SPEED_FAST;
-        } else {
+        }
+        else if (game.stunned) {
+            speed = PLAYER_SPEED_STUNNED;
+        }
+        else {
             speed = PLAYER_SPEED_DEFAULT;
         }
     }
 
     private static final int PLAYER_SIZE = 64;
-    private static final int PLAYER_SPEED_FAST = 500;
-    private static final int PLAYER_SPEED_DEFAULT = 200;
+    private static final int PLAYER_SPEED_FAST = 800;
+    private static final int PLAYER_SPEED_DEFAULT = 400;
+    public final int STUN_DURATION = 3;
+    public int PLAYER_SPEED_STUNNED = 50;
     private int speed = PLAYER_SPEED_DEFAULT;
+
 
 }

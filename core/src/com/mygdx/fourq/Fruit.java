@@ -21,11 +21,11 @@ public class Fruit {
         fruit.y = game.GAME_SCREEN_Y;
         fruit.width = 64;
         fruit.height = 64;
-        lastDropTime = TimeUtils.nanoTime();
+        fruitLastDropTime = TimeUtils.nanoTime();
 
         fruits = new Array<Rectangle>();
         spawnFruit();
-        
+
     }
 
     public void spawnFruit() {
@@ -35,12 +35,12 @@ public class Fruit {
         fruitBox.width = 64;
         fruitBox.height = 64;
         fruits.add(fruitBox);
-        lastDropTime = TimeUtils.nanoTime();
+        fruitLastDropTime = TimeUtils.nanoTime();
     }
 
     public void render() {
 
-        if(TimeUtils.nanoTime() - lastDropTime > spawnFruitInterval) {
+        if(TimeUtils.nanoTime() - fruitLastDropTime > spawnFruitInterval) {
             spawnFruit();
         }
     }
@@ -70,11 +70,11 @@ public class Fruit {
     public void dispose() {
 
     }
-    
+
     private Rectangle fruit;
-    private long lastDropTime;
+    private long fruitLastDropTime;
     private Array<Rectangle> fruits;
     private static final int FRUIT_SIZE = 64;
     private static final int FRUIT_SPEED = 500;
-    private int spawnFruitInterval = 500000000;
+    private long spawnFruitInterval = 500000000L;
 }

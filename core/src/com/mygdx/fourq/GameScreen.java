@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -17,11 +19,15 @@ public class GameScreen implements Screen {
 
     private Player chara;
     private Fruit fruit;
+    private Bomb bomb;
+
+
 
     public GameScreen(final Game game) {
         this.game = game;
         chara = new Player(this);
         fruit = new Fruit(this);
+        bomb = new Bomb(this);
         initComponents();
 
     }
@@ -48,7 +54,12 @@ public class GameScreen implements Screen {
         batch.draw(texture, 0, margin, GAME_SCREEN_X, GAME_SCREEN_Y);
         batch.draw(playerImage, player.x, player.y);
         fruit.draw();
+
+        bomb.draw();
+
         batch.end();
+
+        updateTimer(Gdx.graphics.getDeltaTime());
 
         // process user input
         chara.render();
@@ -58,8 +69,12 @@ public class GameScreen implements Screen {
         fruit.render();
         fruit.move();
 
+
+        bomb.render();
+        bomb.move();
+
         batch.begin();
-        font.draw(batch, "" + points, player.x+(player.width/2), player.y + player.height + 20);
+        font.draw(batch, "" + points, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
         batch.end();
     }
 
@@ -91,15 +106,31 @@ public class GameScreen implements Screen {
         // dispose of all the native resources
         dropImage.dispose();
         playerImage.dispose();
+        bombImage.dispose();
         dropSound.dispose();
         rainMusic.dispose();
         batch.dispose();
         font.dispose();
+        fruit.dispose();
+
+
+
+    }
+
+    public void updateTimer(float deltaTime) {
+        if (stunned) {
+            stunTimer += deltaTime;
+            if (stunTimer >= chara.STUN_DURATION) {
+                stunned = false;
+                stunTimer = 0;
+            }
+        }
     }
 
     public void initComponents() {
         // load the images for the droplet and the player, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("melon.png"));
+        bombImage = new Texture(Gdx.files.internal("bomb.png"));
         playerImage = new Texture(Gdx.files.internal("cheebi.png"));
 
         // load the drop sound effect and the rain background "music"
@@ -116,7 +147,7 @@ public class GameScreen implements Screen {
 
         // init font
         font = new BitmapFont();
-        font.getData().setScale(1.5f);
+        font.getData().setScale(2f);
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -125,32 +156,34 @@ public class GameScreen implements Screen {
 
         chara.createPlayer();
         fruit.create();
+        bomb.create();
+    }
+
+    public void stunPlayer() {
+        stunned=true;
     }
 
     public OrthographicCamera camera;
     public Texture dropImage;
     private Texture playerImage;
+    public Texture bombImage;
     public Sound dropSound;
     private Music rainMusic;
     public SpriteBatch batch;
-    public Array<Rectangle> fruits;
 
     private BitmapFont font;
     private Texture texture;
     public int points;
-    private float timeSinceLastDrop;
 
     public final int GAME_SCREEN_X = 480;
     public final int GAME_SCREEN_Y = 640;
 
     public Rectangle player;
 
-    private static final float SPAWN_FRUIT_INTERVAL = 1000000000/3f;
-    private static final float PLAYING_AREA_RATIO = 2f / 3f;
-    private static final float WHITE_AREA_RATIO = 1f / 3f;
-    private static final float MARGIN_RATIO = 0.05f;
-    private float playingAreaHeight;
-    private float whiteAreaHeight;
     private float margin = 0;
+    public float stunTimer = 0;
+    public boolean stunned = false;
+
+
 
 }
