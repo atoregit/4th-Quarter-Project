@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
     private Music rainMusic;
     public SpriteBatch batch;
 
-    private BitmapFont font;
+    public BitmapFont font;
     private Texture texture;
     public int points;
 
