@@ -59,7 +59,6 @@ public class Fruit {
                 FruitRectangle collidedFruit = (FruitRectangle) fruit;
                 int fruitValue = collidedFruit.fruitValue;
                 System.out.println("Collided with fruit value: " + fruitValue);
-                game.points++;
                 game.dropSound.play();
                 collectLogic(fruitValue);
                 iter.remove();
@@ -73,16 +72,16 @@ public class Fruit {
 
     public void generateFruitValue(FruitRectangle fruit) {
         // Choose a factor of 180 as the fruit value
-        int[] factors = {1, 2, 3, 4, 5, 6, 9, 10, 12, 15, 18, 20, 30, 36, 45, 60, 90};
+        int[] factors = { 20, 30, 45, 60, 90};
         fruit.fruitValue = factors[MathUtils.random(factors.length - 1)];
     }
-    
+
 
     public void collectLogic(int value) {
         collected[collectIndex] = value;
         collectIndex = (collectIndex + 1) % 3;
         if ((collected[0] + collected[1] + collected[2]) == 180) {
-            System.out.println("YO!");
+            game.points++;
         }
         System.out.println(collected[0] + " " + collected[1] + " " + collected[2]);
         System.out.println(collected[0]  + collected[1] + collected[2]);
@@ -96,7 +95,7 @@ public class Fruit {
     private long fruitLastDropTime;
     private Array<Rectangle> fruits;
     private static final int FRUIT_SIZE = 64;
-    private static final int FRUIT_SPEED = 500;
+    private static final int FRUIT_SPEED = 400;
     private long spawnFruitInterval = 300000000L;
 
     private static class FruitRectangle extends Rectangle {

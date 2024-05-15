@@ -59,6 +59,7 @@ public class GameScreen implements Screen {
 
         batch.end();
 
+        float remainingTime = timerDuration - timer;
         updateTimer(Gdx.graphics.getDeltaTime());
 
         // process user input
@@ -74,7 +75,8 @@ public class GameScreen implements Screen {
         bomb.move();
 
         batch.begin();
-        font.draw(batch, "" + fruit.lastFruitSum, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
+        font.draw(batch, "" + points, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
+        font.draw(batch, "" + (int) remainingTime, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.3f);
         batch.end();
     }
 
@@ -125,7 +127,13 @@ public class GameScreen implements Screen {
                 stunTimer = 0;
             }
         }
+
+        timer += deltaTime;
+        if (timer >= timerDuration) {
+            game.setScreen(new MainMenuScreen(game));
+        }
     }
+
 
     public void initComponents() {
         // load the images for the droplet and the player, 64x64 pixels each
@@ -184,6 +192,8 @@ public class GameScreen implements Screen {
     public float stunTimer = 0;
     public boolean stunned = false;
 
+    private float timer = 0;
+    private float timerDuration = 60;
 
 
 }
