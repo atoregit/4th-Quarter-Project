@@ -51,8 +51,8 @@ public class Player {
     }
 
     private static final int PLAYER_SIZE = 64;
-    private static final int PLAYER_SPEED_FAST = 800;
-    private static final int PLAYER_SPEED_DEFAULT = 400;
+    private static final int PLAYER_SPEED_FAST = 1000;
+    private static final int PLAYER_SPEED_DEFAULT = 500;
     public final int STUN_DURATION = 3;
     public int PLAYER_SPEED_STUNNED = 50;
     private int speed = PLAYER_SPEED_DEFAULT;

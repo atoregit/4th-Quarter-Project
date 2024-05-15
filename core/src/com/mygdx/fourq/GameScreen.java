@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
         bomb.move();
 
         batch.begin();
-        font.draw(batch, "" + points, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
+        font.draw(batch, "" + fruit.lastFruitSum, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
         batch.end();
     }
 

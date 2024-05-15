@@ -72,8 +72,11 @@ public class Fruit {
     }
 
     public void generateFruitValue(FruitRectangle fruit) {
-        fruit.fruitValue = MathUtils.random(1, 61);
+        // Choose a factor of 180 as the fruit value
+        int[] factors = {1, 2, 3, 4, 5, 6, 9, 10, 12, 15, 18, 20, 30, 36, 45, 60, 90};
+        fruit.fruitValue = factors[MathUtils.random(factors.length - 1)];
     }
+    
 
     public void collectLogic(int value) {
         collected[collectIndex] = value;
@@ -81,17 +84,20 @@ public class Fruit {
         if ((collected[0] + collected[1] + collected[2]) == 180) {
             System.out.println("YO!");
         }
+        System.out.println(collected[0] + " " + collected[1] + " " + collected[2]);
+        System.out.println(collected[0]  + collected[1] + collected[2]);
+        lastFruitSum = (collected[0] + collected[1] + collected[2]);
     }
 
     private int[] collected = new int [3];
     private int collectIndex = 0;
-
+    public int lastFruitSum;
     private BitmapFont font;
     private long fruitLastDropTime;
     private Array<Rectangle> fruits;
     private static final int FRUIT_SIZE = 64;
-    private static final int FRUIT_SPEED = 250;
-    private long spawnFruitInterval = 500000000L;
+    private static final int FRUIT_SPEED = 500;
+    private long spawnFruitInterval = 300000000L;
 
     private static class FruitRectangle extends Rectangle {
         int fruitValue;
