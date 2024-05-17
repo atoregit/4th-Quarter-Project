@@ -3,7 +3,6 @@ package com.mygdx.fourq;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 
 public class Player {
     final GameScreen game;
@@ -40,7 +39,7 @@ public class Player {
 
     public void processSpeed() {
         if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !game.stunned) {
-            speed = PLAYER_SPEED_FAST;
+            speed = PLAYER_SPEED_FOCUS;
         }
         else if (game.stunned) {
             speed = PLAYER_SPEED_STUNNED;
@@ -50,8 +49,8 @@ public class Player {
         }
     }
 
-    private static final int PLAYER_SIZE = 64;
-    private static final int PLAYER_SPEED_FAST = 1000;
+    private static final int PLAYER_SIZE = 32;
+    private static final int PLAYER_SPEED_FOCUS = 200;
     private static final int PLAYER_SPEED_DEFAULT = 500;
     public final int STUN_DURATION = 3;
     public int PLAYER_SPEED_STUNNED = 50;

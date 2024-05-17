@@ -86,17 +86,19 @@ public class Fruit {
         System.out.println(collected[0] + " " + collected[1] + " " + collected[2]);
         System.out.println(collected[0]  + collected[1] + collected[2]);
         lastFruitSum = (collected[0] + collected[1] + collected[2]);
+        remainingFruitSum = (collected[1] + collected[2]);
     }
 
     private int[] collected = new int [3];
     private int collectIndex = 0;
     public int lastFruitSum;
+    public int remainingFruitSum;
     private BitmapFont font;
     private long fruitLastDropTime;
     private Array<Rectangle> fruits;
     private static final int FRUIT_SIZE = 64;
     private static final int FRUIT_SPEED = 400;
-    private long spawnFruitInterval = 300000000L;
+    private long spawnFruitInterval = 400000000L;
 
     private static class FruitRectangle extends Rectangle {
         int fruitValue;
