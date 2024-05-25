@@ -1,11 +1,13 @@
-package com.mygdx.fourq;
+package com.mygdx.fourq.Fruits;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.fourq.GameScreen;
 
 import java.util.Iterator;
 
@@ -64,6 +66,13 @@ public class Fruit {
                 iter.remove();
             }
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.X)) {
+            collected[0] = 0;
+            collected[1] = 0;
+            collected[2] = 0;
+            remainingFruitSum = 0;
+        }
+
     }
 
     public void dispose() {
@@ -87,9 +96,12 @@ public class Fruit {
         System.out.println(collected[0]  + collected[1] + collected[2]);
         lastFruitSum = (collected[0] + collected[1] + collected[2]);
         remainingFruitSum = (collected[1] + collected[2]);
+
+
+
     }
 
-    private int[] collected = new int [3];
+    public int[] collected = new int [3];
     private int collectIndex = 0;
     public int lastFruitSum;
     public int remainingFruitSum;

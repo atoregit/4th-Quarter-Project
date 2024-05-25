@@ -4,15 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.fourq.Fruits.Fruit;
 
 public class GameScreen implements Screen {
     final Game game;
@@ -77,7 +75,8 @@ public class GameScreen implements Screen {
         batch.begin();
         font.draw(batch, "" + points, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
         font.draw(batch, "" + (int) remainingTime, GAME_SCREEN_X*0.1f, GAME_SCREEN_Y*0.1f);
-        font.draw(batch, "" + (int) fruit.remainingFruitSum, player.x, player.y+100);
+        font.draw(batch, "" + fruit.remainingFruitSum, player.x, player.y+100);
+        font.draw(batch, " " + fruit.collected[0] + " " + fruit.collected[1] + " " + fruit.collected[2] , player.x-30, player.y+150);
         batch.end();
     }
 
@@ -89,7 +88,7 @@ public class GameScreen implements Screen {
     public void show() {
         // start the playback of the background music
         // when the screen is shown
-        rainMusic.play();
+        gameMusic.play();
     }
 
     @Override
@@ -111,7 +110,7 @@ public class GameScreen implements Screen {
         playerImage.dispose();
         bombImage.dispose();
         dropSound.dispose();
-        rainMusic.dispose();
+        gameMusic.dispose();
         batch.dispose();
         font.dispose();
         fruit.dispose();
@@ -131,6 +130,7 @@ public class GameScreen implements Screen {
 
         timer += deltaTime;
         if (timer >= timerDuration) {
+            gameMusic.stop();
             game.setScreen(new MainMenuScreen(game));
         }
     }
@@ -144,15 +144,15 @@ public class GameScreen implements Screen {
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("hit.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("music.wav"));
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music.wav"));
 
         // set up the screen (kind of self-explanatory rite)
 
         texture = new Texture(Gdx.files.internal("bg.png"));
 
         // start the playback of the background music immediately
-        rainMusic.setLooping(true);
-        rainMusic.play();
+        gameMusic.setLooping(true);
+        gameMusic.play();
 
         // init font
         font = new BitmapFont();
@@ -177,7 +177,7 @@ public class GameScreen implements Screen {
     private Texture playerImage;
     public Texture bombImage;
     public Sound dropSound;
-    private Music rainMusic;
+    private Music gameMusic;
     public SpriteBatch batch;
 
     public BitmapFont font;

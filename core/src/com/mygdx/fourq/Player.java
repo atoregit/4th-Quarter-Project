@@ -18,7 +18,7 @@ public class Player {
         game.player.width = PLAYER_SIZE;
         game.player.height = PLAYER_SIZE;
     }
-
+    
     public void render() {
 
     }
@@ -30,6 +30,8 @@ public class Player {
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             game.player.x += speed * Gdx.graphics.getDeltaTime();
         }
+
+
 
         // make sure the player stays within the screen bounds
         if(game.player.x < 0) game.player.x = 0;
