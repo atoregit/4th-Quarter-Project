@@ -6,20 +6,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 
-public class MainMenuScreen implements Screen {
+public class ScoreScreen implements Screen {
     final Game game;
     private final Stage stage;
 
+    OrthographicCamera camera;
 
-    public MainMenuScreen(final Game game) {
+    public ScoreScreen(final Game game) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
 
     }
 
@@ -28,12 +33,11 @@ public class MainMenuScreen implements Screen {
     public void show() {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
         stage.addActor(table);
 
         Skin skin = new Skin(Gdx.files.internal("skin/terra-mother-ui.json"));
 
-        ImageTextButton newGame = new ImageTextButton("Play", skin);
+        ImageTextButton newGame = new ImageTextButton("Back to game...", skin);
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -42,44 +46,9 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        ImageTextButton scores = new ImageTextButton("Scores", skin);
-        scores.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new ScoreScreen(game));
-                dispose();
-            }
-        });
-
-        ImageTextButton tutorial = new ImageTextButton("Tutorial", skin);
-        scores.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new TutorialScreen(game));
-                dispose();
-            }
-        });
-
-        ImageTextButton exit = new ImageTextButton("Exit", skin);
-        exit.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
-            }
-        });
-
 
         table.add(newGame).fillX().uniformX();
         table.row().pad(10, 0, 10, 0);
-        table.add(scores).fillX().uniformX();
-        table.row();
-        table.add(tutorial).fillX().uniformX();
-        table.row();
-        table.add(exit).fillX().uniformX();
-
-
-
-
 
     }
 

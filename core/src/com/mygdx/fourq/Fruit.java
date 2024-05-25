@@ -1,40 +1,45 @@
-package com.mygdx.fourq.Fruits;
+package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mygdx.fourq.GameScreen;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Fruit {
     final GameScreen game;
+    private Map<FruitType, Texture> fruitTextures;
 
     public Fruit(final GameScreen game) {
         this.game = game;
+        this.fruitTextures = new HashMap<>();
+        for (FruitType type : FruitType.values()) {
+            fruitTextures.put(type, new Texture(Gdx.files.internal(type.spritePath)));
+        }
     }
 
     public void create() {
         fruitLastDropTime = TimeUtils.nanoTime();
-
         font = new BitmapFont();
         font.getData().setScale(2f);
-
         fruits = new Array<>();
         spawnFruit();
     }
 
     public void spawnFruit() {
-        Rectangle fruitBox = new FruitRectangle();
+        FruitRectangle fruitBox = new FruitRectangle();
         fruitBox.x = MathUtils.random(0, game.GAME_SCREEN_X - 64);
         fruitBox.y = game.GAME_SCREEN_Y;
         fruitBox.width = 64;
         fruitBox.height = 64;
-        generateFruitValue((FruitRectangle) fruitBox);
+        generateFruitValue(fruitBox);
         fruits.add(fruitBox);
         fruitLastDropTime = TimeUtils.nanoTime();
     }
@@ -47,8 +52,9 @@ public class Fruit {
 
     public void draw() {
         for (Rectangle fruit : fruits) {
-            game.batch.draw(game.dropImage, fruit.x, fruit.y);
-            game.font.draw(game.batch, String.valueOf(((FruitRectangle) fruit).fruitValue), fruit.x, fruit.y + 50);
+            FruitRectangle fruitRect = (FruitRectangle) fruit;
+            game.batch.draw(fruitTextures.get(fruitRect.fruitType), fruitRect.x, fruitRect.y);
+            game.font.draw(game.batch, String.valueOf(fruitRect.fruitValue), fruitRect.x, fruitRect.y + 50);
         }
     }
 
@@ -66,42 +72,44 @@ public class Fruit {
                 iter.remove();
             }
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.X)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.X)) {
             collected[0] = 0;
             collected[1] = 0;
             collected[2] = 0;
             remainingFruitSum = 0;
         }
-
     }
 
     public void dispose() {
-
+        for (Texture texture : fruitTextures.values()) {
+            texture.dispose();
+        }
     }
 
     public void generateFruitValue(FruitRectangle fruit) {
-        // Choose a factor of 180 as the fruit value
-        int[] factors = { 20, 30, 45, 60, 90};
-        fruit.fruitValue = factors[MathUtils.random(factors.length - 1)];
+        FruitType[] types = FruitType.values();
+        FruitType type = types[MathUtils.random(types.length - 1)];
+        fruit.fruitType = type;
+        fruit.fruitValue = type.value;
     }
-
 
     public void collectLogic(int value) {
         collected[collectIndex] = value;
         collectIndex = (collectIndex + 1) % 3;
-        if ((collected[0] + collected[1] + collected[2]) == 180) {
+        if ((collected[0] + collected[1] + collected[2] == 180) && (collected[0] != 0) && (collected[1] != 0) && (collected[2] != 0)) {
             game.points++;
+            collected[0] = 0;
+            collected[1] = 0;
+            collected[2] = 0;
+            remainingFruitSum = 0;
         }
         System.out.println(collected[0] + " " + collected[1] + " " + collected[2]);
-        System.out.println(collected[0]  + collected[1] + collected[2]);
+        System.out.println(collected[0] + collected[1] + collected[2]);
         lastFruitSum = (collected[0] + collected[1] + collected[2]);
         remainingFruitSum = (collected[1] + collected[2]);
-
-
-
     }
 
-    public int[] collected = new int [3];
+    public int[] collected = new int[3];
     private int collectIndex = 0;
     public int lastFruitSum;
     public int remainingFruitSum;
@@ -114,5 +122,6 @@ public class Fruit {
 
     private static class FruitRectangle extends Rectangle {
         int fruitValue;
+        FruitType fruitType;
     }
 }

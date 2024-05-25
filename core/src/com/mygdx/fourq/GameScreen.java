@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.fourq.Fruits.Fruit;
+
 
 public class GameScreen implements Screen {
     final Game game;
@@ -53,6 +53,7 @@ public class GameScreen implements Screen {
         batch.draw(playerImage, player.x, player.y);
         fruit.draw();
 
+
         bomb.draw();
 
         batch.end();
@@ -69,14 +70,17 @@ public class GameScreen implements Screen {
         fruit.move();
 
 
+
         bomb.render();
         bomb.move();
 
         batch.begin();
         font.draw(batch, "" + points, GAME_SCREEN_X*0.5f, GAME_SCREEN_Y*0.95f);
-        font.draw(batch, "" + (int) remainingTime, GAME_SCREEN_X*0.1f, GAME_SCREEN_Y*0.1f);
-        font.draw(batch, "" + fruit.remainingFruitSum, player.x, player.y+100);
-        font.draw(batch, " " + fruit.collected[0] + " " + fruit.collected[1] + " " + fruit.collected[2] , player.x-30, player.y+150);
+        font.draw(batch, "" + (int) remainingTime, GAME_SCREEN_X*0.1f, GAME_SCREEN_Y*0.95f);
+        // font.draw(batch, "" + fruit.remainingFruitSum, player.x, player.y+100);
+        font.draw(batch, "" + fruit.collected[0] , GAME_SCREEN_X*0.85f, GAME_SCREEN_Y*0.3f);
+        font.draw(batch, "" + fruit.collected[1] , GAME_SCREEN_X*0.85f, GAME_SCREEN_Y*0.3f - 50);
+        font.draw(batch, "" + fruit.collected[2] , GAME_SCREEN_X*0.85f, GAME_SCREEN_Y*0.3f - 100);
         batch.end();
     }
 
@@ -114,6 +118,7 @@ public class GameScreen implements Screen {
         batch.dispose();
         font.dispose();
         fruit.dispose();
+        bomb.dispose();
 
 
 
