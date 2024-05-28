@@ -2,6 +2,7 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,12 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.logging.FileHandler;
+
 
 public class ScoreScreen implements Screen {
     final Game game;
     private final Stage stage;
 
     OrthographicCamera camera;
+    FileHandler scorefile;
 
     public ScoreScreen(final Game game) {
         this.game = game;
@@ -45,6 +49,8 @@ public class ScoreScreen implements Screen {
                 dispose();
             }
         });
+
+        loadScores();
 
 
         table.add(newGame).fillX().uniformX();
@@ -83,6 +89,21 @@ public class ScoreScreen implements Screen {
 
 
 
+    }
+
+
+    public void loadScores() {
+        try {
+            FileHandle file = Gdx.files.local("scores.txt");
+            if (file.exists()) {
+                String text = file.readString();
+                System.out.println(text);
+            } else {
+                Gdx.app.log("ScoreManager", "File does not exist.");
+            }
+        } catch (Exception e) {
+            Gdx.app.error("ScoreManager", "Error loading data", e);
+        }
     }
 
     @Override

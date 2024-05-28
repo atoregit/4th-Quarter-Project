@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -136,10 +137,21 @@ public class GameScreen implements Screen {
         timer += deltaTime;
         if (timer >= timerDuration) {
             gameMusic.stop();
+            saveData();
             game.setScreen(new MainMenuScreen(game));
         }
     }
 
+
+        public void saveData() {
+            try {
+                FileHandle scorefile = Gdx.files.local("scores.txt");
+                scorefile.writeString("My god, it's full of stars", false);
+                Gdx.app.log("ScoreManager", "Data saved successfully.");
+            } catch (Exception e) {
+                Gdx.app.error("ScoreManager", "Error saving data", e);
+            }
+    }
 
     public void initComponents() {
         // load the images for the droplet and the player, 64x64 pixels each
@@ -184,6 +196,7 @@ public class GameScreen implements Screen {
     public Sound dropSound;
     private Music gameMusic;
     public SpriteBatch batch;
+    FileHandle scorefile;
 
     public BitmapFont font;
     private Texture texture;
