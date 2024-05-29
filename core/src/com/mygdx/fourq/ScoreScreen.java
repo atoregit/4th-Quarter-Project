@@ -96,8 +96,27 @@ public class ScoreScreen implements Screen {
         try {
             FileHandle file = Gdx.files.local("scores.txt");
             if (file.exists()) {
-                String text = file.readString();
-                System.out.println(text);
+                String text = file.readString().trim(); // read and trim string
+                if (!text.isEmpty()) {
+                    String[] scoreStrings = text.split(" ");
+                    int[] scores = new int[scoreStrings.length];
+
+                    for (int i = 0; i < scoreStrings.length; i++) {
+                        try {
+                            scores[i] = Integer.parseInt(scoreStrings[i]);
+                            Gdx.app.log("ScoreManager", "Loaded score: " + scores[i]);
+                        } catch (NumberFormatException e) {
+                            Gdx.app.error("ScoreManager", "Invalid score format: " + scoreStrings[i], e);
+                        }
+                    }
+
+                    // print da scores
+                    for (int score : scores) {
+                        System.out.println(score);
+                    }
+                } else {
+                    Gdx.app.log("ScoreManager", "No scores found in the file.");
+                }
             } else {
                 Gdx.app.log("ScoreManager", "File does not exist.");
             }
@@ -105,6 +124,7 @@ public class ScoreScreen implements Screen {
             Gdx.app.error("ScoreManager", "Error loading data", e);
         }
     }
+
 
     @Override
     public void resize(int i, int i1) {

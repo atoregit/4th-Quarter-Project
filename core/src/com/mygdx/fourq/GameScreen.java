@@ -146,7 +146,7 @@ public class GameScreen implements Screen {
         public void saveData() {
             try {
                 FileHandle scorefile = Gdx.files.local("scores.txt");
-                scorefile.writeString("My god, it's full of stars", false);
+                scorefile.writeString(points + " ", true);
                 Gdx.app.log("ScoreManager", "Data saved successfully.");
             } catch (Exception e) {
                 Gdx.app.error("ScoreManager", "Error saving data", e);
@@ -196,7 +196,7 @@ public class GameScreen implements Screen {
     public Sound dropSound;
     private Music gameMusic;
     public SpriteBatch batch;
-    FileHandle scorefile;
+
 
     public BitmapFont font;
     private Texture texture;
