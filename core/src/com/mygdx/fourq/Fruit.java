@@ -2,6 +2,7 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,6 +31,13 @@ public class Fruit {
         font = new BitmapFont();
         font.getData().setScale(2f);
         fruits = new Array<>();
+
+        collect1 = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitcollect1.wav"));
+        collect2 = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitcollect2.wav"));
+        collect3 = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitcollect3.wav"));
+        point = Gdx.audio.newMusic(Gdx.files.internal("sfx/point.wav"));
+        fruitclear = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitclear.wav"));
+
         spawnFruit();
     }
 
@@ -67,7 +75,6 @@ public class Fruit {
                 FruitRectangle collidedFruit = (FruitRectangle) fruit;
                 int fruitValue = collidedFruit.fruitValue;
                 System.out.println("Collided with fruit value: " + fruitValue);
-                game.dropSound.play();
                 collectLogic(fruitValue);
                 iter.remove();
             }
@@ -77,6 +84,8 @@ public class Fruit {
             collected[1] = 0;
             collected[2] = 0;
             remainingFruitSum = 0;
+            collectIndex = 0;
+            fruitclear.play();
         }
     }
 
@@ -84,6 +93,11 @@ public class Fruit {
         for (Texture texture : fruitTextures.values()) {
             texture.dispose();
         }
+        collect1.dispose();
+        collect2.dispose();
+        collect3.dispose();
+        point.dispose();
+        fruitclear.dispose();
     }
 
     public void generateFruitValue(FruitRectangle fruit) {
@@ -96,15 +110,27 @@ public class Fruit {
     public void collectLogic(int value) {
         collected[collectIndex] = value;
         collectIndex = (collectIndex + 1) % 3;
+        switch (collectIndex) {
+            case 1:
+                collect1.play();
+                break;
+            case 2:
+                collect2.play();
+                break;
+            case 0: // Reset to collect1 after the third collect
+                collect3.play();
+                break;
+        }
+
         if ((collected[0] + collected[1] + collected[2] == 180) && (collected[0] != 0) && (collected[1] != 0) && (collected[2] != 0)) {
             game.points++;
             collected[0] = 0;
             collected[1] = 0;
             collected[2] = 0;
-            remainingFruitSum = 0;
+            collectIndex = 1;
+            point.play();
         }
-        System.out.println(collected[0] + " " + collected[1] + " " + collected[2]);
-        System.out.println(collected[0] + collected[1] + collected[2]);
+
         lastFruitSum = (collected[0] + collected[1] + collected[2]);
         remainingFruitSum = (collected[1] + collected[2]);
     }
@@ -119,6 +145,12 @@ public class Fruit {
     private static final int FRUIT_SIZE = 64;
     private static final int FRUIT_SPEED = 400;
     private long spawnFruitInterval = 400000000L;
+
+    private Music collect1;
+    private Music collect2;
+    private Music collect3;
+    private Music point;
+    private Music fruitclear;
 
     private static class FruitRectangle extends Rectangle {
         int fruitValue;

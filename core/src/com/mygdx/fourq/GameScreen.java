@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
         fruit.draw();
 
 
-        bomb.draw();
+        bomb.draw(batch);
 
         batch.end();
 
