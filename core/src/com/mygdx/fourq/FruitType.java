@@ -14,4 +14,13 @@ public enum FruitType {
         this.value = value;
         this.spritePath = spritePath;
     }
+    public static FruitType getByValue(int value) {
+        for (FruitType type : values()) {
+            if (type.value == value) {
+                return type;
+            }
+        }
+        return null;
+    }
 }
+

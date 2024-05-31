@@ -2,12 +2,13 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -19,55 +20,81 @@ public class MainMenuScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("menumusic.mp3"));
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("sfx/click.wav"));
+        menuMusic.setLooping(true);
+        menuMusic.play();
     }
 
     @Override
     public void show() {
+        Texture buttonBackground = new Texture(Gdx.files.internal("button2.png")); // Background for buttons
+
+        Texture mainMenuBackground = new Texture(Gdx.files.internal("menubg.png"));
+        Image background = new Image(mainMenuBackground);
+        background.setSize(480, 640);
+        stage.addActor(background);
+
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true); // Set to false in production
+        table.top();
         stage.addActor(table);
 
         Skin skin = new Skin(Gdx.files.internal("skin/terra-mother-ui.json"));
 
-        // Create buttons
+        Image logo = new Image(new Texture(Gdx.files.internal("logo.png")));
+
         ImageTextButton newGame = new ImageTextButton("Play", skin);
+        newGame.getStyle().up = new Image(buttonBackground).getDrawable();
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new GameScreen(game));
+                clickSound.play();
                 dispose();
             }
         });
 
         ImageTextButton scores = new ImageTextButton("Scores", skin);
+        scores.getStyle().up = new Image(buttonBackground).getDrawable();
         scores.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new ScoreScreen(game));
+                clickSound.play();
                 dispose();
+
             }
         });
 
         ImageTextButton tutorial = new ImageTextButton("Tutorial", skin);
+        tutorial.getStyle().up = new Image(buttonBackground).getDrawable();
         tutorial.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new GameEndScreen(game));
+                game.setScreen(new TutorialScreen(game));
+                clickSound.play();
                 dispose();
             }
         });
 
-        ImageTextButton exit = new ImageTextButton("Exit", skin);
-        exit.addListener(new ChangeListener() {
+        ImageTextButton automationButton = new ImageTextButton("Automation", skin);
+        automationButton.getStyle().up = new Image(buttonBackground).getDrawable();
+        automationButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
+                automations auto = new automations();
+                auto.setFrame();
+                game.pause();
+                menuMusic.pause();
             }
         });
 
-        // Add buttons to the table
-        table.defaults().fillX().uniformX();
+        table.row().pad(50, 0, 40, 0);
+        table.add(logo).width(Value.percentWidth(0.7f, table)).height(Value.percentWidth(0.3f, table));
+
+        table.defaults().fillX().uniformX().height(50);
         table.row().pad(10, 0, 10, 0);
         table.add(newGame);
         table.row().pad(10, 0, 10, 0);
@@ -75,7 +102,7 @@ public class MainMenuScreen implements Screen {
         table.row().pad(10, 0, 10, 0);
         table.add(tutorial);
         table.row().pad(10, 0, 10, 0);
-        table.add(exit);
+        table.add(automationButton);
     }
 
     @Override
@@ -106,5 +133,9 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        menuMusic.dispose();
     }
+
+    private Music menuMusic;
+private Sound clickSound;
 }

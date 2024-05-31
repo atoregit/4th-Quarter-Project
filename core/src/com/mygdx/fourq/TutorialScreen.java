@@ -2,14 +2,19 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 
@@ -24,31 +29,38 @@ public class TutorialScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        camera.setToOrtho(false, 480, 640);
+        backgroundTexture = new Texture(Gdx.files.internal("tutorial.png"));
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("sfx/click.wav"));
 
     }
 
 
     @Override
     public void show() {
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
+
+        Texture exitButtonTexture = new Texture(Gdx.files.internal("back.png"));
+        Image exitButtonImage = new Image(exitButtonTexture);
+        exitButtonImage.setSize(64, 64);
+
+        Table buttonTable = new Table();
+        buttonTable.top().right();
+        buttonTable.setFillParent(true);
+        buttonTable.add(exitButtonImage).size(50, 50).padTop(10).padRight(10);
+
+        stage.addActor(buttonTable);
 
         Skin skin = new Skin(Gdx.files.internal("skin/terra-mother-ui.json"));
 
-        ImageTextButton newGame = new ImageTextButton("Back to game...", skin);
-        newGame.addListener(new ChangeListener() {
+
+        exitButtonImage.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen(game));
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
                 dispose();
+                clickSound.play();
             }
         });
-
-
-        table.add(newGame).fillX().uniformX();
-        table.row().pad(10, 0, 10, 0);
 
     }
 
@@ -74,10 +86,12 @@ public class TutorialScreen implements Screen {
 //            dispose();
 //        }
 
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        stage.draw();
+
+
+        game.batch.begin();
+        game.batch.draw(backgroundTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
+        game.batch.end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
@@ -107,5 +121,10 @@ public class TutorialScreen implements Screen {
 
     @Override
     public void dispose() {
+        clickSound.dispose();
     }
+
+    Texture backgroundTexture;
+    Sound clickSound;
+
 }

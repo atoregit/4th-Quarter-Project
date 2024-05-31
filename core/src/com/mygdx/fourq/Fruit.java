@@ -37,6 +37,7 @@ public class Fruit {
         collect3 = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitcollect3.wav"));
         point = Gdx.audio.newMusic(Gdx.files.internal("sfx/point.wav"));
         fruitclear = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitclear.wav"));
+        fruitwrong = Gdx.audio.newMusic(Gdx.files.internal("sfx/fruitwrong.wav"));
 
         spawnFruit();
     }
@@ -61,8 +62,7 @@ public class Fruit {
     public void draw() {
         for (Rectangle fruit : fruits) {
             FruitRectangle fruitRect = (FruitRectangle) fruit;
-            game.batch.draw(fruitTextures.get(fruitRect.fruitType), fruitRect.x, fruitRect.y);
-            game.font.draw(game.batch, String.valueOf(fruitRect.fruitValue), fruitRect.x, fruitRect.y + 50);
+            game.batch.draw(fruitTextures.get(fruitRect.fruitType), fruitRect.x-15, fruitRect.y+15);
         }
     }
 
@@ -122,17 +122,35 @@ public class Fruit {
                 break;
         }
 
-        if ((collected[0] + collected[1] + collected[2] == 180) && (collected[0] != 0) && (collected[1] != 0) && (collected[2] != 0)) {
-            game.points++;
+        if (collectIndex == 0) { // This means three fruits have been collected
+            int sum = collected[0] + collected[1] + collected[2];
+            if (sum == 180) {
+                game.points++;
+                point.play();
+            } else {
+                game.points--;
+                fruitwrong.play();
+            }
+            // Reset the collected array and index
             collected[0] = 0;
             collected[1] = 0;
             collected[2] = 0;
-            collectIndex = 1;
-            point.play();
+            collectIndex = 0;
         }
 
-        lastFruitSum = (collected[0] + collected[1] + collected[2]);
-        remainingFruitSum = (collected[1] + collected[2]);
+        lastFruitSum = collected[0] + collected[1] + collected[2];
+        remainingFruitSum = collected[1] + collected[2];
+    }
+
+    public void drawCollectedFruits() {
+        float startX = 10;
+        float startY = game.GAME_SCREEN_Y-100;
+        for (int i = 0; i < 3; i++) {
+            FruitType type = FruitType.getByValue(collected[i]);
+            if (type != null) {
+                game.batch.draw(fruitTextures.get(type), startX + i * 30, startY, 32, 32);
+            }
+        }
     }
 
     public int[] collected = new int[3];
@@ -143,14 +161,15 @@ public class Fruit {
     private long fruitLastDropTime;
     private Array<Rectangle> fruits;
     private static final int FRUIT_SIZE = 64;
-    private static final int FRUIT_SPEED = 400;
-    private long spawnFruitInterval = 400000000L;
+    private static final int FRUIT_SPEED = 200;
+    private long spawnFruitInterval = 800000000L;
 
     private Music collect1;
     private Music collect2;
     private Music collect3;
     private Music point;
     private Music fruitclear;
+    private Music fruitwrong;
 
     private static class FruitRectangle extends Rectangle {
         int fruitValue;

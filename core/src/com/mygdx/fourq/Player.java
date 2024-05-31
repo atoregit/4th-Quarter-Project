@@ -23,13 +23,18 @@ public class Player {
 
     }
 
+
+
     public void move() {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             game.player.x -= speed * Gdx.graphics.getDeltaTime();
+
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             game.player.x += speed * Gdx.graphics.getDeltaTime();
+
         }
+
 
 
 
@@ -41,21 +46,27 @@ public class Player {
 
     public void processSpeed() {
         if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && !game.stunned) {
-            speed = PLAYER_SPEED_FOCUS;
+            speed = PLAYER_SPEED_BOOST;
         }
         else if (game.stunned) {
             speed = PLAYER_SPEED_STUNNED;
+        }
+        else if (game.slowed) {
+            speed = PLAYER_SPEED_SLOWED;
         }
         else {
             speed = PLAYER_SPEED_DEFAULT;
         }
     }
 
+
     private static final int PLAYER_SIZE = 32;
-    private static final int PLAYER_SPEED_FOCUS = 200;
+    private static final int PLAYER_SPEED_BOOST = 800;
     private static final int PLAYER_SPEED_DEFAULT = 500;
     public final int STUN_DURATION = 3;
-    public int PLAYER_SPEED_STUNNED = 50;
+    public final int SLOW_DURATION = 3;
+    public int PLAYER_SPEED_STUNNED = 0;
+    public int PLAYER_SPEED_SLOWED = 20;
     private int speed = PLAYER_SPEED_DEFAULT;
 
 

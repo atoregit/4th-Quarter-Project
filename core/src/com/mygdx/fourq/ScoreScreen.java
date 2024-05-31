@@ -5,75 +5,65 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.util.logging.FileHandler;
-
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ScoreScreen implements Screen {
     final Game game;
     private final Stage stage;
+    private final OrthographicCamera camera;
+    private final Texture backgroundTexture;
 
-    OrthographicCamera camera;
-    FileHandler scorefile;
+    private String[] playerNames = new String[5];
+    private int[] scores = new int[5];
 
     public ScoreScreen(final Game game) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
-
+        camera.setToOrtho(false, 480, 640);
+        backgroundTexture = new Texture(Gdx.files.internal("scorescreen.png"));
     }
-
 
     @Override
     public void show() {
-
         Table table = new Table();
-        table.setDebug(true);
         table.setFillParent(true);
+
         stage.addActor(table);
 
-
         Skin skin = new Skin(Gdx.files.internal("skin/terra-mother-ui.json"));
+        BitmapFont font = skin.getFont("font");
+        font.getData().setScale(1.2f);
+
+        Label[] scoreNames = new Label[5];
+        Label[] scoreValues = new Label[5];
+
+        Texture exitButtonTexture = new Texture(Gdx.files.internal("back.png"));
+        Image exitButtonImage = new Image(exitButtonTexture);
+        exitButtonImage.setSize(64, 64);
+
+        for (int i = 0; i < 5; i++) {
+            scoreNames[i] = new Label("text here", skin);
+            scoreValues[i] = new Label("text here", skin);
+        }
 
 
-
-        Label scoreLabel = new Label("SCORES", skin);
-        Label score1Name = new Label("text here", skin);
-        Label score2Name = new Label("text here", skin);
-        Label score3Name = new Label("text here", skin);
-        Label score4Name = new Label("text here", skin);
-        Label score5Name = new Label("text here", skin);
-        Label score6Name = new Label("text here", skin);
-        Label score7Name = new Label("text here", skin);
-        Label score8Name = new Label("text here", skin);
-        Label score9Name = new Label("text here", skin);
-        Label score10Name = new Label("text here", skin);
-
-        Label score1 = new Label("text here", skin);
-        Label score2 = new Label("text here", skin);
-        Label score3 = new Label("text here", skin);
-        Label score4 = new Label("text here", skin);
-        Label score5 = new Label("text here", skin);
-        Label score6 = new Label("text here", skin);
-        Label score7 = new Label("text here", skin);
-        Label score8 = new Label("text here", skin);
-        Label score9 = new Label("text here", skin);
-        Label score10 = new Label("text here", skin);
-
-        ImageTextButton newGame = new ImageTextButton("Back to menu", skin);
-        newGame.addListener(new ChangeListener() {
+        exitButtonImage.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenuScreen(game));
                 dispose();
             }
@@ -81,111 +71,75 @@ public class ScoreScreen implements Screen {
 
         loadScores();
 
-        table.defaults().fillX().uniformX();
+        table.defaults().uniformX();
         table.row().pad(10, 0, 10, 0);
-        table.add(scoreLabel).colspan(2);
+
+        for (int i = 0; i < 5; i++) {
+            table.row().pad(10, 0, 10, 0);
+            table.add(scoreNames[i]);
+            table.add(scoreValues[i]).center();
+        }
 
         table.row().pad(10, 0, 10, 0);
-        table.add(score1Name);
-        table.add(score1);
 
-        table.row().pad(10, 0, 10, 0);
-        table.add(score2Name);
-        table.add(score2);
 
-        table.row().pad(10, 0, 10, 0);
-        table.add(score3Name);
-        table.add(score3);
+        for (int i = 0; i < 5; i++) {
+            scoreNames[i].setText(playerNames[i]);
+            scoreValues[i].setText(String.valueOf(scores[i]));
+        }
 
-        table.row().pad(10, 0, 10, 0);
-        table.add(score4Name);
-        table.add(score4);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(score5Name);
-        table.add(score5);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(score6Name);
-        table.add(score6);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(score7Name);
-        table.add(score7);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(score8Name);
-        table.add(score8);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(score9Name);
-        table.add(score9);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(score10Name);
-        table.add(score10);
-
-        table.row().pad(10, 0, 10, 0);
-        table.add(newGame);
+        Table buttonTable = new Table();
+        buttonTable.top().right(); // Align the button to the top right corner
+        buttonTable.setFillParent(true);
+        buttonTable.add(exitButtonImage).size(50, 50).padTop(10).padRight(10);
+        stage.addActor(buttonTable);
 
     }
 
     @Override
     public void render(float delta) {
-//        ScreenUtils.clear(0, 0, 0.2f, 1);
-//        game.font.getData().setScale(1.5f);
-//
-//        camera.update();
-//        game.batch.setProjectionMatrix(camera.combined);
-//
-//        game.batch.begin();
-//        game.font.draw(game.batch, "Welcome to THE fourth quarter project!!!", 100, 150);
-//        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
-//        game.batch.end();
-//
-//        if (Gdx.input.isTouched()) {
-//            game.setScreen(new GameScreen(game));
-//            dispose();
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-//            game.setScreen(new Automations());
-//            dispose();
-//        }
-
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        game.batch.begin();
+        game.batch.draw(backgroundTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
+        game.batch.end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-
-
-
     }
-
 
     public void loadScores() {
         try {
             FileHandle file = Gdx.files.local("scores.txt");
             if (file.exists()) {
-                String text = file.readString().trim(); // read and trim string
-                if (!text.isEmpty()) {
-                    String[] scoreStrings = text.split(" ");
-                    int[] scores = new int[scoreStrings.length];
+                String[] lines = file.readString().trim().split("\\r?\\n");
 
-                    for (int i = 0; i < scoreStrings.length; i++) {
-                        try {
-                            scores[i] = Integer.parseInt(scoreStrings[i]);
-                            Gdx.app.log("ScoreManager", "Loaded score: " + scores[i]);
-                        } catch (NumberFormatException e) {
-                            Gdx.app.error("ScoreManager", "Invalid score format: " + scoreStrings[i], e);
+                Map<Integer, String> scoreMap = new TreeMap<>(Collections.reverseOrder());
+
+                for (String line : lines) {
+                    int lastSpaceIndex = line.lastIndexOf(' ');
+                    if (lastSpaceIndex != -1) {
+                        String playerName = line.substring(0, lastSpaceIndex);
+                        String scoreStr = line.substring(lastSpaceIndex + 1);
+                        if (scoreStr.matches("-?\\d+")) {
+                            int score = Integer.parseInt(scoreStr);
+                            scoreMap.put(score, playerName);
+                        } else {
+                            Gdx.app.error("ScoreManager", "Invalid score format in line: " + line);
                         }
+                    } else {
+                        Gdx.app.error("ScoreManager", "Invalid format in line: " + line);
                     }
+                }
 
-                    // print da scores
-                    for (int score : scores) {
-                        System.out.println(score);
-                    }
-                } else {
-                    Gdx.app.log("ScoreManager", "No scores found in the file.");
+                // Populate playerNames and scores arrays
+                int index = 0;
+                for (Map.Entry<Integer, String> entry : scoreMap.entrySet()) {
+                    if (index >= 5) break; // Only consider the top 5 scores
+                    playerNames[index] = entry.getValue();
+                    scores[index] = entry.getKey();
+                    index++;
                 }
             } else {
                 Gdx.app.log("ScoreManager", "File does not exist.");
@@ -197,27 +151,22 @@ public class ScoreScreen implements Screen {
 
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
         stage.dispose();
+        backgroundTexture.dispose();
     }
 }
