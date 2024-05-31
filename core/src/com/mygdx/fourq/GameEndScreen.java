@@ -2,6 +2,8 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,10 +33,13 @@ public class GameEndScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("sfx/click.wav"));
+        gameOver = Gdx.audio.newSound(Gdx.files.internal("sfx/gameover.wav"));
     }
 
     @Override
     public void show() {
+        gameOver.play();
 
         System.out.println(finalPoints);
 
@@ -58,6 +63,7 @@ public class GameEndScreen implements Screen {
                 playerName = enterName.getText();
                 saveData(finalPoints, playerName);
                 System.out.println("Player name: " + playerName);
+                clickSound.play();
                 // Add additional logic to save the player's name if needed
             }
         });
@@ -126,5 +132,8 @@ public class GameEndScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        clickSound.dispose();
     }
+private Sound clickSound;
+    private Sound gameOver;
 }

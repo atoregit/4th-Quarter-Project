@@ -12,7 +12,7 @@ public class lesson implements ActionListener{
     
     public lesson() {
         frame = new JFrame("Lesson GUI");
-        lessonL = new JLabel(new ImageIcon("lesson.png")); // Replace with the actual path
+        lessonL = new JLabel(new ImageIcon("/Users/macbookpro/Documents/School/CS Stuff/4th-Qua/assets/lesson.png")); // Replace with the actual path
         returnButton = new JButton("Go Back!");
     }
     

@@ -86,8 +86,6 @@ public class MainMenuScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 automations auto = new automations();
                 auto.setFrame();
-                game.pause();
-                menuMusic.pause();
             }
         });
 

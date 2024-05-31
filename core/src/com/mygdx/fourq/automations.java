@@ -17,7 +17,7 @@ public class automations implements ActionListener{
     
     public automations() {
         frame = new JFrame("Automation GUI");
-        figureL = new JLabel(new ImageIcon("assets/figure.png")); // Replace with the actual path
+        figureL = new JLabel(new ImageIcon("/Users/macbookpro/Documents/School/CS Stuff/4th-Qua/assets/figure.png")); // Replace with the actual path
         statementL = new JLabel("Solving an Oblique Triangle Given Two Angles and an Included Side (ASA Case)");
         promptL = new JLabel("Enter angle A, side B, and angle C:");
         angleAL = new JLabel("Angle A (alpha) in degrees:");
@@ -27,7 +27,7 @@ public class automations implements ActionListener{
         sideBTF = new JTextField();
         angleCTF = new JTextField();
         calculateButton = new JButton("Calculate");
-        MenuButton = new JButton("Menu");
+        MenuButton = new JButton("Close");
         lessonButton = new JButton("Learn More!");
         resultTextArea = new JTextArea();
     }
@@ -76,6 +76,7 @@ public class automations implements ActionListener{
             calculateAndDisplay();
         } else if(e.getSource() == MenuButton){
             frame.dispose();
+            System.exit(0);
         } else if(e.getSource() == lessonButton){
             lesson q = new lesson();
             q.setFrame();
