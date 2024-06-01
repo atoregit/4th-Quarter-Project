@@ -98,6 +98,7 @@ public class Fruit {
         collect3.dispose();
         point.dispose();
         fruitclear.dispose();
+        fruitwrong.dispose();
     }
 
     public void generateFruitValue(FruitRectangle fruit) {
@@ -162,7 +163,7 @@ public class Fruit {
     private Array<Rectangle> fruits;
     private static final int FRUIT_SIZE = 64;
     private static final int FRUIT_SPEED = 250;
-    private long spawnFruitInterval = 800000000L;
+    private long spawnFruitInterval = 500000000L;
 
     private Music collect1;
     private Music collect2;

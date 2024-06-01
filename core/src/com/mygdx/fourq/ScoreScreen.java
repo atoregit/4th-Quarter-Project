@@ -2,6 +2,8 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -35,10 +37,16 @@ public class ScoreScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 640);
         backgroundTexture = new Texture(Gdx.files.internal("scorescreen.png"));
+        scoreMusic = Gdx.audio.newMusic(Gdx.files.internal("scoresbgm.wav"));
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("sfx/click.wav"));
     }
 
     @Override
     public void show() {
+
+        scoreMusic.setLooping(true);
+        scoreMusic.play();
+
         Table table = new Table();
         table.setFillParent(true);
 
@@ -66,17 +74,18 @@ public class ScoreScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenuScreen(game));
                 dispose();
+                clickSound.play();
             }
         });
 
         loadScores();
 
-        table.defaults().uniformX();
+        table.defaults().space(2);
         table.row().pad(10, 0, 10, 0);
 
         for (int i = 0; i < 5; i++) {
             table.row().pad(10, 0, 10, 0);
-            table.add(scoreNames[i]);
+            table.add(scoreNames[i]).padRight(20);
             table.add(scoreValues[i]).center();
         }
 
@@ -127,22 +136,33 @@ public class ScoreScreen implements Screen {
                             scoreMap.put(score, playerName);
                         } else {
                             Gdx.app.error("ScoreManager", "Invalid score format in line: " + line);
+                            for (int i = 0; i < 5; i++) {
+                                playerNames[i] = "No scores yet";
+                                scores[i] = 0;
+                            }
                         }
                     } else {
                         Gdx.app.error("ScoreManager", "Invalid format in line: " + line);
+                        for (int i = 0; i < 5; i++) {
+                            playerNames[i] = "No scores yet";
+                            scores[i] = 0;
+                        }
                     }
                 }
 
-                // Populate playerNames and scores arrays
                 int index = 0;
                 for (Map.Entry<Integer, String> entry : scoreMap.entrySet()) {
-                    if (index >= 5) break; // Only consider the top 5 scores
+                    if (index >= 5) break;
                     playerNames[index] = entry.getValue();
                     scores[index] = entry.getKey();
                     index++;
                 }
             } else {
                 Gdx.app.log("ScoreManager", "File does not exist.");
+                for (int i = 0; i < 5; i++) {
+                    playerNames[i] = "No scores yet";
+                    scores[i] = 0;
+                }
             }
         } catch (Exception e) {
             Gdx.app.error("ScoreManager", "Error loading data", e);
@@ -167,6 +187,10 @@ public class ScoreScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        scoreMusic.dispose();
         backgroundTexture.dispose();
+
     }
+    public Music scoreMusic;
+    Sound clickSound;
 }

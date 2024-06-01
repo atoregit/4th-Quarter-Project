@@ -4,20 +4,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class automations implements ActionListener{
+public class automations implements ActionListener {
     JFrame frame;
     JLabel statementL, lessonL, figureL, promptL, angleAL, sideBL, angleCL;
     JTextField angleATF, sideBTF, angleCTF;
     JButton calculateButton, MenuButton, lessonButton, returnButton;
     JTextArea resultTextArea;
-    
+    Clip buttonSound;
+
     public automations() {
         frame = new JFrame("Automation GUI");
-        figureL = new JLabel(new ImageIcon("/Users/macbookpro/Documents/School/CS Stuff/4th-Qua/assets/figure.png")); // Replace with the actual path
+        figureL = new JLabel(new ImageIcon("C:\\Users\\TEMP.DESKTOP-1NFA8JO\\IdeaProjects\\4th-Quarter-Project\\assets\\figure.png"));
         statementL = new JLabel("Solving an Oblique Triangle Given Two Angles and an Included Side (ASA Case)");
         promptL = new JLabel("Enter angle A, side B, and angle C:");
         angleAL = new JLabel("Angle A (alpha) in degrees:");
@@ -30,58 +38,62 @@ public class automations implements ActionListener{
         MenuButton = new JButton("Close");
         lessonButton = new JButton("Learn More!");
         resultTextArea = new JTextArea();
-    }
-        public void setFrame() {
-        // Set up the layout
-        frame.setLayout(new GraphPaperLayout(new Dimension(20, 40)));
 
-        // Add components to the layout
+        try {
+            File soundFile = new File("sfx/press1.wav");
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            buttonSound = AudioSystem.getClip();
+            buttonSound.open(audioIn);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setFrame() {
+        frame.setLayout(new GraphPaperLayout(new Dimension(20, 40)));
         frame.add(statementL, new Rectangle(1, 3, 18, 6));
         statementL.setHorizontalAlignment(SwingConstants.CENTER);
         statementL.setFont(new Font("Arial", Font.BOLD, 24));
-
         frame.add(promptL, new Rectangle(2, 8, 16, 1));
-        
         frame.add(angleAL, new Rectangle(1, 10, 4, 1));
         frame.add(angleATF, new Rectangle(4, 10, 6, 1));
-        
         frame.add(sideBL, new Rectangle(1, 12, 4, 1));
         frame.add(sideBTF, new Rectangle(4, 12, 6, 1));
-        
         frame.add(angleCL, new Rectangle(1, 14, 4, 1));
         frame.add(angleCTF, new Rectangle(4, 14, 6, 1));
-
         frame.add(MenuButton, new Rectangle(15, 1, 4, 2));
         frame.add(calculateButton, new Rectangle(2, 16, 7, 2));
         frame.add(lessonButton, new Rectangle(1, 1, 4, 2));
-
         frame.add(figureL, new Rectangle(2, 20, 8, 18));
         frame.add(resultTextArea, new Rectangle(11, 10, 8, 28));
 
-        // Add action listener to the buttons
         calculateButton.addActionListener(this);
         MenuButton.addActionListener(this);
-        lessonButton.addActionListener(this);    
+        lessonButton.addActionListener(this);
 
-        // Set up the frame
         frame.setSize(1200, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         resultTextArea.setEditable(false);
     }
-        
+
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == calculateButton){
+        if (buttonSound != null) {
+            buttonSound.setFramePosition(0);
+            buttonSound.start();
+        }
+
+        if (e.getSource() == calculateButton) {
             calculateAndDisplay();
-        } else if(e.getSource() == MenuButton){
+        } else if (e.getSource() == MenuButton) {
             frame.dispose();
             System.exit(0);
-        } else if(e.getSource() == lessonButton){
+        } else if (e.getSource() == lessonButton) {
             lesson q = new lesson();
             q.setFrame();
             frame.dispose();
-        } 
+        }
     }
 
     private void calculateAndDisplay() {
@@ -90,22 +102,18 @@ public class automations implements ActionListener{
             double sideB = Double.parseDouble(sideBTF.getText());
             double angleC = Double.parseDouble(angleCTF.getText());
 
-            // Calculate the third angle
             double angleB = 180 - (angleA + angleC);
 
-            // Calculate the sides using the Law of Sines
             double sideA = sideB * Math.sin(Math.toRadians(angleA)) / Math.sin(Math.toRadians(angleB));
             double sideC = sideB * Math.sin(Math.toRadians(angleC)) / Math.sin(Math.toRadians(angleB));
 
             DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
             df.applyPattern("#,##0.00");
 
-            // Format the results
             String sideAFormatted = df.format(sideA);
             String sideCFormatted = df.format(sideC);
             String angleBFormatted = df.format(angleB);
 
-            // Display the complete solution
             resultTextArea.setText("Solution steps:\n");
 
             resultTextArea.append("1. Given:\n");

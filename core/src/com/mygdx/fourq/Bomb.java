@@ -40,7 +40,7 @@ public class Bomb {
     }
 
     private void loadExplosionAnimation() {
-        Texture boomSheet = new Texture(Gdx.files.internal("boom.png")); // Assuming boom.gif is a sprite sheet
+        Texture boomSheet = new Texture(Gdx.files.internal("boom.png"));
         TextureRegion[][] tmp = TextureRegion.split(boomSheet, boomSheet.getWidth() / FRAME_COLS, boomSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] explosionFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
@@ -101,13 +101,14 @@ public class Bomb {
                 stateTime = 0f;
                 isExplosionPlaying = true;
                 boom.play();
-                iter.remove(); // Remove the bomb from the list when it overlaps with the player
+                iter.remove();
             }
         }
     }
 
     public void dispose() {
         boom.dispose();
+        explosionAnimation = null;
     }
 
     private Rectangle bomb;
@@ -119,7 +120,6 @@ public class Bomb {
 
     private Music boom;
 
-    // Assuming boom.gif is a sprite sheet with FRAME_COLS * FRAME_ROWS frames
     private static final int FRAME_COLS = 4;
     private static final int FRAME_ROWS = 4;
 }

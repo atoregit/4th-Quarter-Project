@@ -2,6 +2,7 @@ package com.mygdx.fourq;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -32,12 +33,15 @@ public class TutorialScreen implements Screen {
         camera.setToOrtho(false, 480, 640);
         backgroundTexture = new Texture(Gdx.files.internal("tutorial.png"));
         clickSound = Gdx.audio.newSound(Gdx.files.internal("sfx/click.wav"));
-
+        tutorialMusic = Gdx.audio.newMusic(Gdx.files.internal("scoresbgm.wav"));
     }
 
 
     @Override
     public void show() {
+
+        tutorialMusic.setLooping(true);
+        tutorialMusic.play();
 
         Texture exitButtonTexture = new Texture(Gdx.files.internal("back.png"));
         Image exitButtonImage = new Image(exitButtonTexture);
@@ -121,10 +125,12 @@ public class TutorialScreen implements Screen {
 
     @Override
     public void dispose() {
-        clickSound.dispose();
+
+        tutorialMusic.dispose();
     }
 
     Texture backgroundTexture;
     Sound clickSound;
+    Music tutorialMusic;
 
 }

@@ -6,12 +6,14 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -29,23 +31,25 @@ public class PauseMenuScreen implements Screen {
         camera.setToOrtho(false, 480, 640);
         backgroundTexture = new Texture(Gdx.files.internal("pause.png"));
         clickSound = Gdx.audio.newSound(Gdx.files.internal("sfx/click.wav"));
-
-
     }
 
     @Override
     public void show() {
-
         stage = new Stage(new FitViewport(480, 640, camera));
         Gdx.input.setInputProcessor(stage);
 
-
-
         skin = new Skin(Gdx.files.internal("skin/terra-mother-ui.json"));
 
-        ImageTextButton resumeButton = new ImageTextButton("Resume", skin);
-        ImageTextButton mainMenuButton = new ImageTextButton("Main Menu", skin);
-        ImageTextButton helpButton = new ImageTextButton("Help", skin);
+
+        Texture buttonTexture = new Texture(Gdx.files.internal("button2.png"));
+        ImageTextButton.ImageTextButtonStyle buttonStyle = new ImageTextButton.ImageTextButtonStyle();
+        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
+        buttonStyle.down = new TextureRegionDrawable(new TextureRegion(buttonTexture));
+        buttonStyle.font = skin.getFont("font");
+
+        ImageTextButton resumeButton = new ImageTextButton("Resume", buttonStyle);
+        ImageTextButton mainMenuButton = new ImageTextButton("Main Menu", buttonStyle);
+        ImageTextButton helpButton = new ImageTextButton("Help", buttonStyle);
 
         BitmapFont font = skin.getFont("font");
         font.getData().setScale(1.2f);
@@ -66,6 +70,7 @@ public class PauseMenuScreen implements Screen {
                 clickSound.play();
             }
         });
+
         helpButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -74,7 +79,6 @@ public class PauseMenuScreen implements Screen {
                 clickSound.play();
             }
         });
-
 
         Table table = new Table();
         table.setFillParent(true);
@@ -86,11 +90,17 @@ public class PauseMenuScreen implements Screen {
         table.add(helpButton).size(200, 60).padBottom(20);
 
 
+        table.setWidth(440);
+
         stage.addActor(table);
     }
 
     @Override
     public void render(float delta) {
+        ScreenUtils.clear(1, 1, 1, 1);
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
+
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
         game.batch.end();
@@ -121,8 +131,9 @@ public class PauseMenuScreen implements Screen {
         stage.dispose();
         skin.dispose();
         clickSound.dispose();
+        backgroundTexture.dispose();
     }
-    public Sound clickSound;
 
+    public Sound clickSound;
     Texture backgroundTexture;
 }

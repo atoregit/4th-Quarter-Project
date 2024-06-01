@@ -1,5 +1,8 @@
 package com.mygdx.fourq;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -14,6 +17,13 @@ public class Game extends com.badlogic.gdx.Game {
         batch = new SpriteBatch();
         font = new BitmapFont(); // use libGDX's default Arial font
         this.setScreen(new MainMenuScreen(this));
+
+        Pixmap pixmap = new Pixmap(Gdx.files.internal("cursor.png"));
+        int xHotspot = 5, yHotspot = 5;
+        Cursor cursor = Gdx.graphics.newCursor(pixmap, xHotspot, yHotspot);
+        pixmap.dispose();
+        Gdx.graphics.setCursor(cursor);
+
     }
 
     @Override
