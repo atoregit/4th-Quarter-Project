@@ -25,7 +25,7 @@ public class automations implements ActionListener {
 
     public automations() {
         frame = new JFrame("Automation GUI");
-        figureL = new JLabel(new ImageIcon("C:\\Users\\TEMP.DESKTOP-1NFA8JO\\IdeaProjects\\4th-Quarter-Project\\assets\\figure.png"));
+        figureL = new JLabel(new ImageIcon(getClass().getResource("/figure.png")));
         statementL = new JLabel("Solving an Oblique Triangle Given Two Angles and an Included Side (ASA Case)");
         promptL = new JLabel("Enter angle A, side B, and angle C:");
         angleAL = new JLabel("Angle A (alpha) in degrees:");

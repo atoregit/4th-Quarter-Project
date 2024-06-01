@@ -20,7 +20,7 @@ public class lesson implements ActionListener {
 
     public lesson() {
         frame = new JFrame("Lesson GUI");
-        lessonL = new JLabel(new ImageIcon("C:\\Users\\TEMP.DESKTOP-1NFA8JO\\IdeaProjects\\4th-Quarter-Project\\assets\\lesson.png"));
+        lessonL = new JLabel(new ImageIcon(getClass().getResource("/lesson.png")));
         returnButton = new JButton("Go Back!");
 
         try {

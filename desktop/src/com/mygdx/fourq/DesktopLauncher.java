@@ -14,7 +14,7 @@ public class DesktopLauncher {
 		config.useVsync(true);
 		config.setWindowedMode(480, 640);
 		config.setResizable(false);
-		config.setWindowIcon("C:\\Users\\TEMP.DESKTOP-1NFA8JO\\IdeaProjects\\4th-Quarter-Project\\assets\\harveybasket.png");
+		config.setWindowIcon("harveybasket.png");
 		config.setTitle("Fourth Quarter Game");
 		new Lwjgl3Application(new Game(), config);
 
